@@ -52,6 +52,7 @@ def arg_parse():
     arg_p.add_argument('-f', '--filename', type=str, default=None)
     arg_p.add_argument('-v', '--verbose', action='store_true')
     arg_p.add_argument('-g', '--generate_graph', action='store_true')
+    arg_p.add_argument('-o', '--output', type=str, default='out2.txt')
     return arg_p
 
 
@@ -127,11 +128,13 @@ def stanford_ie(input_filename, verbose=True, generate_graphviz=False):
 
     return results
 
+import pickle
 
 def main(args):
     arg_p = arg_parse().parse_args(args[1:])
     filename = arg_p.filename
     verbose = arg_p.verbose
+    output = arg_p.output
     generate_graphviz = arg_p.generate_graph
     print(arg_p)
     if filename is None:
@@ -141,7 +144,12 @@ def main(args):
         debug_print('filename = {}'.format(filename), verbose)
     entities_relations = stanford_ie(filename, verbose, generate_graphviz)
     print(entities_relations)
+    if output:
+        with open(output, "wb") as file:
+            pickle.dump(entities_relations, file)
 
-
+            
 if __name__ == '__main__':
     exit(main(argv))
+
+    
